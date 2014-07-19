@@ -1,15 +1,27 @@
 'use strict';
 
-var gulp          = require('gulp');
-var clean         = require('gulp-clean');
-var connect       = require('gulp-connect');
-var es6transpiler = require('gulp-es6-transpiler');
+var gulp                = require('gulp');
+var concat              = require('gulp-concat');
+var sourcemaps          = require('gulp-sourcemaps');
+var es6ModuleTranspiler = require('gulp-es6-module-transpiler');
+var clean               = require('gulp-clean');
+var connect             = require('gulp-connect');
+var livereload          = require('gulp-livereload');
+var bower               = require('gulp-bower-src');
 
 
 gulp.task('js', function() {
-  return gulp.src('app/src/main.js')
-    .pipe(es6transpiler())
+  return gulp.src('app/src/**/*.js')
+    .pipe(sourcemaps.init())
+      .pipe(es6ModuleTranspiler({type: 'amd'}))
+      .pipe(concat('main.js'))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist/src'));
+});
+
+gulp.task('jsDeps', function() {
+  return bower()
+    .pipe(gulp.dest('dist/lib'));
 });
 
 gulp.task('html', function() {
@@ -25,15 +37,22 @@ gulp.task('clean', function(){
 
 
 gulp.task('watch', function(){
-  gulp.watch(['app/src/**/*.js'], ['js']);
-});
+  var server = livereload();
 
-gulp.task('connect', ['js', 'html'], function(){
-  connect.server({
-    root: 'dist',
-    port: 8000,
-    livereload: true
+  gulp.watch('app/src/**/*.js', ['js']);
+  gulp.watch('app/*.html', ['html']);
+
+  gulp.watch(['dist/**']).on('change', function(file) {
+    server.changed(file.path);
   });
 });
 
-gulp.task('default', ['connect', 'watch']);
+gulp.task('connect', ['js', 'jsDeps', 'html'], function(){
+  connect.server({
+    root: 'dist',
+    port: 8000,
+    livereload: false
+  });
+});
+
+gulp.task('default', ['watch', 'connect']);
