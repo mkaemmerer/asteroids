@@ -3,6 +3,7 @@
 import __nothing__                      from 'core/calculus';
 import Bacon                            from 'Bacon';
 import {Position2 as P2, Vector2 as V2} from 'core/vector';
+import {toWorldCoordinates}             from 'game/world';
 import Laser                            from 'game/laser';
 
 function Ship(pos, controls){
@@ -27,6 +28,7 @@ function Ship(pos, controls){
   this.status  = Bacon.combineTemplate({
       position: velocity
         .integrate(pos)
+        .map(toWorldCoordinates)
         .skipDuplicates(P2.equals),
       rotation: rotation
     })

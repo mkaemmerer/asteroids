@@ -1,4 +1,3 @@
-
 'use strict';
 
 import Bacon                            from 'Bacon';

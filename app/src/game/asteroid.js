@@ -3,6 +3,7 @@
 import __nothing__                      from 'core/calculus';
 import Bacon                            from 'Bacon';
 import {Position2 as P2, Vector2 as V2} from 'core/vector';
+import {toWorldCoordinates}             from 'game/world';
 
 function Asteroid(pos, size){
   this.messages = new Bacon.Bus();
@@ -17,6 +18,7 @@ function Asteroid(pos, size){
   this.status  = Bacon.combineTemplate({
       position: velocity
         .integrate(pos)
+        .map(toWorldCoordinates)
         .skipDuplicates(P2.equals),
       rotation: rotation
     })
