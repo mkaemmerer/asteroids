@@ -11,7 +11,11 @@ function Scalar(s){
 Scalar.times = function(s, v){
   return new Vector2(s.s * v.dx, s.s * v.dy);
 };
+Scalar.plus  = function(s1,s2){
+  return new Scalar(s1.s + s2.s);
+};
 Scalar.prototype.times = function(v){ return Scalar.times(this, v); };
+Scalar.prototype.plus  = function(s){ return Scalar.plus(this, s);  };
 
 ///////////////////////////////////////////////////////////////////////////////
 // Point
@@ -31,7 +35,7 @@ Position2.offset = function(p, v){
 };
 Position2.prototype.equals     = function(p2){ return Position2.equals(this, p2); };
 Position2.prototype.offset     = function(v){  return Position2.offset(this, v);  };
-Position2.prototype.getOffset  = function(p2){ return Vector2.fromTo(p2, this); };
+Position2.prototype.getOffset  = function(p2){ return Vector2.fromTo(p2, this);   };
 
 ///////////////////////////////////////////////////////////////////////////////
 // Vector
@@ -58,9 +62,16 @@ Vector2.magnitude = function(v){
 Vector2.fromTo = function(p1, p2){
   return new Vector2(p2.x - p1.x, p2.y - p1.y);
 };
+Vector2.rotate = function(v,r){
+  var cos = Math.cos(r);
+  var sin = Math.sin(r);
+
+  return new Vector2(v.dx*cos - v.dy*sin, v.dx*sin + v.dy*cos);
+};
 Vector2.prototype.equals    = function(v2){ return Vector2.equals(this, v2); };
 Vector2.prototype.plus      = function(v2){ return Vector2.plus(this, v2);   };
 Vector2.prototype.times     = function(s){  return Vector2.times(this, s);   };
 Vector2.prototype.magnitude = function(){   return Vector2.magnitude(this);  };
+Vector2.prototype.rotate    = function(s){  return Vector2.rotate(this, s);  };
 
 export { Scalar, Position2, Vector2 };

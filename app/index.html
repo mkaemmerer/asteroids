@@ -9,14 +9,23 @@
   </head>
   <body>
     <h1>Asteroids!</h1>
+    <div id="game"></div>
 
+    <script src="lib/kineticjs/kinetic.js"></script>
     <script src="lib/almond/almond.js"></script>
+    <script src="lib/jquery/dist/jquery.js"></script>
     <script src="lib/bacon/dist/Bacon.js"></script>
     <script src="src/main.js"></script>
 
     <script type="text/javascript">
+      define("kinetic",[],function(){
+        return {'default': window.Kinetic};
+      });
       define("Bacon",[],function(){
-        return window.Bacon;
+        return {'default': window.Bacon};
+      });
+      define("jQuery",[],function(){
+        return {'default': window.jQuery};
       });
     </script>
     <script type="text/javascript">

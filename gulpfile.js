@@ -40,7 +40,7 @@ gulp.task('watch', function(){
   var server = livereload();
 
   gulp.watch('app/src/**/*.js', ['js']);
-  gulp.watch('app/*.html', ['html']);
+  gulp.watch('app/*.html',      ['html']);
 
   gulp.watch(['dist/**']).on('change', function(file) {
     server.changed(file.path);
