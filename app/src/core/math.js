@@ -52,7 +52,7 @@ function addPointVector(p,v){
   return p.offset(v);
 }
 
-//A polymorphic add function
+//A polymorphic difference function
 function diff(x,y){
   if(x instanceof P2 && y instanceof P2){
     return diffPoints(x,y);
@@ -73,4 +73,4 @@ function diffPoints(p1,p2){
   return V2.fromTo(p2,p1);
 }
 
-export {scale, add};
+export {add, diff, scale};

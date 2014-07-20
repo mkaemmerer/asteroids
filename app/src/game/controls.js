@@ -25,14 +25,14 @@ function autofire(key){
 var Controls = {};
 Controls.NoControls = function(){
   return {
-    movement: Bacon.constant(V2.zero),
-    fire:     Bacon.never()
+    direction: Bacon.constant(V2.zero),
+    action:    Bacon.never()
   };
 };
 Controls.KeyboardControls = function(){
   return {
-    movement: directional_keys(KEYS['Up'], KEYS['Down'], KEYS['Left'], KEYS['Right']),
-    fire:     autofire(KEYS['Space'])
+    direction: directional_keys(KEYS['Up'], KEYS['Down'], KEYS['Left'], KEYS['Right']),
+    action:    autofire(KEYS['Space'])
   };
 };
 
@@ -40,13 +40,13 @@ Controls.KeyboardControls = function(){
 function Controller(controls){
   this._change   = new Bacon.Bus();
 
-  this.movement = this._change
+  this.direction = this._change
       .toProperty(controls || Controls.NoControls())
-      .flatMapLatest('.movement');
+      .flatMapLatest('.direction');
 
-  this.fire     = this._change
+  this.action    = this._change
       .toProperty(controls || Controls.NoControls())
-      .flatMapLatest('.fire');
+      .flatMapLatest('.action');
 
   //Add a fake listener so that changes on the bus aren't lost
   this._change.onValue(function(){});
