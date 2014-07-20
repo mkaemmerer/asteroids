@@ -59,19 +59,28 @@ Vector2.times = function(v,s){
 Vector2.magnitude = function(v){
   return Math.sqrt(v.dx*v.dx + v.dy*v.dy);
 };
+Vector2.unit      = function(v){
+  var mag = Vector2.magnitude(v);
+  return new Vector2(v.dx / mag, v.dy / mag);
+};
 Vector2.fromTo = function(p1, p2){
   return new Vector2(p2.x - p1.x, p2.y - p1.y);
 };
 Vector2.rotate = function(v,r){
   var cos = Math.cos(r);
   var sin = Math.sin(r);
-
   return new Vector2(v.dx*cos - v.dy*sin, v.dx*sin + v.dy*cos);
+};
+Vector2.fromRotation = function(r){
+  var cos = Math.cos(r);
+  var sin = Math.sin(r);
+  return new Vector2(cos, sin);
 };
 Vector2.prototype.equals    = function(v2){ return Vector2.equals(this, v2); };
 Vector2.prototype.plus      = function(v2){ return Vector2.plus(this, v2);   };
 Vector2.prototype.times     = function(s){  return Vector2.times(this, s);   };
 Vector2.prototype.magnitude = function(){   return Vector2.magnitude(this);  };
+Vector2.prototype.normalize = function(){   return Vector2.unit(this);       };
 Vector2.prototype.rotate    = function(s){  return Vector2.rotate(this, s);  };
 
 export { Scalar, Position2, Vector2 };

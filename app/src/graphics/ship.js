@@ -3,8 +3,8 @@
 import Sprite from 'graphics/sprite';
 
 function Ship(){
-  this.width  = 10;
-  this.height = 12;
+  this.width  = 12;
+  this.height = 10;
 
   this.init();
 }
@@ -14,9 +14,9 @@ Ship.prototype.draw = function(shape, context){
   var h = this.height;
 
   context.beginPath();
-  context.moveTo( 0,   0);
-  context.lineTo( w,   0);
-  context.lineTo( w/2, h);
+  context.moveTo( -w/2,  -h/2);
+  context.lineTo( -w/2,   h/2);
+  context.lineTo(  w/2,   0);
   context.closePath();
   context.fillStrokeShape(shape);
 };

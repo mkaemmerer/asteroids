@@ -1,26 +1,29 @@
 'use strict';
 
-import __nothing__        from 'core/calculus';
-import Bacon              from 'Bacon';
-import {Position2 as P2}  from 'core/vector';
+import __nothing__                       from 'core/calculus';
+import Bacon                             from 'Bacon';
+import {Position2 as P2, Vector2 as V2}  from 'core/vector';
 
-function Laser(pos, rot, dir){
+function Laser(pos, rot){
+  this.messages  = new Bacon.Bus();
+  this.radius    = 3;
   this.duration  = 4;   // s
   this.moveSpeed = 500; // px/s
 
-  var heading  = Bacon.constant(dir);
-  var velocity = heading
-    .times(this.moveSpeed);
+  var heading  = Bacon.constant(V2.fromRotation(rot));
+  var velocity = heading.times(this.moveSpeed);
   var end      = Bacon.later(this.duration * 1000);
+  var hit      = this.messages.take(1);
 
   this.status  = Bacon.combineTemplate({
       position: velocity
         .integrate(pos)
         .skipDuplicates(P2.equals),
       rotation: rot,
-      heading:  dir
+      heading:  heading
     })
-    .takeUntil(end);
+    .takeUntil(end)
+    .takeUntil(hit);
 }
 
 export default Laser;

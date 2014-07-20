@@ -16,7 +16,6 @@ Sprite.prototype.init = function(){
     y: 0,
     width:  this.width,
     height: this.height,
-    offset: {x: this.width/2, y: this.height/2},
     fill: 'black',
     drawFunc: function(context){ self.draw(this, context); }
   });
