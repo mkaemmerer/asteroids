@@ -6,20 +6,19 @@ import {Position2 as P2, Vector2 as V2} from 'core/vector';
 import {toWorldCoordinates}             from 'game/world';
 
 function Asteroid(pos, size){
-  this.messages = new Bacon.Bus();
-  this.radius   = 10*size;
-  this.size     = size;
+  this.collisions = new Bacon.Bus();
+  this.radius     = 10*size;
+  this.size       = size;
 
   var rotation  = Math.random() * 2 * Math.PI;
   var velocity  = Bacon.constant(V2.fromRotation(rotation)).times(20);
 
-  var destroyed = this.messages.take(1);
+  var destroyed = this.collisions.take(1);
 
   this.status  = Bacon.combineTemplate({
       position: velocity
         .integrate(pos)
-        .map(toWorldCoordinates)
-        .skipDuplicates(P2.equals),
+        .map(toWorldCoordinates),
       rotation: rotation
     })
     .takeUntil(destroyed);

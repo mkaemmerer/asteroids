@@ -36,6 +36,13 @@ function Game(){
     .flatMap('.lasers')
     .doAction(this.registerCollisions.bind(this), 'lasers')
     .toProperty();
+
+  this.ship.onEnd(function(){
+    console.log('game over');
+  });
+  this.asteroids.onEnd(function(){
+    console.log('wave complete');
+  });
 }
 Game.prototype.registerCollisions = function(layer, object){
   var collisions = this.collisions;

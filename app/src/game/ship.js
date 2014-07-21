@@ -7,29 +7,28 @@ import {toWorldCoordinates}             from 'game/world';
 import Laser                            from 'game/laser';
 
 function Ship(pos, controls){
-  this.messages  = new Bacon.Bus();
-  this.radius    = 10;                  // px
-  this.moveSpeed = 100;                 // px/s
-  this.turnSpeed = 0.75 * (2*Math.PI);  // radians/s
+  this.collisions = new Bacon.Bus();
+  this.radius     = 10;                  // px
+  this.moveSpeed  = 100;                 // px/s/s
+  this.turnSpeed  = 0.75 * (2*Math.PI);  // radians/s
 
   var rotation = controls.direction
     .map('.dx')
     .times(this.turnSpeed)
     .integrate(0)
     .skipDuplicates();
-  var heading  = Bacon.constant(V2(1,0))
-    .combine(rotation, V2.rotate);
-  var velocity = controls.direction
+  var heading      = rotation.map(V2.fromRotation);
+  var acceleration = controls.direction
     .map('.dy')
     .times(this.moveSpeed)
     .times(heading);
-  var hit      = this.messages.take(1);
+  var hit          = this.collisions.take(1);
 
   this.status  = Bacon.combineTemplate({
-      position: velocity
+      position: acceleration
+        .integrate(V2.zero)
         .integrate(pos)
-        .map(toWorldCoordinates)
-        .skipDuplicates(P2.equals),
+        .map(toWorldCoordinates),
       rotation: rotation
     })
     .takeUntil(hit);

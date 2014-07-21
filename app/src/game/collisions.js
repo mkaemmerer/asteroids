@@ -53,10 +53,10 @@ CollisionLayer.prototype.register     = function(object){
   other_objects.forEach(function(other){
     var hits = collisions(object, other);
 
-    var unsub_object = object.messages.plug(hits[0]);
+    var unsub_object = object.collisions.plug(hits[0]);
     other.status.onEnd(unsub_object);
 
-    var unsub_other  = other.messages.plug(hits[1]);
+    var unsub_other  = other.collisions.plug(hits[1]);
     object.status.onEnd(unsub_other);
   });
 
