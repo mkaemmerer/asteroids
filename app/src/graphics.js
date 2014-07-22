@@ -6,35 +6,36 @@ import Laser    from 'graphics/laser';
 import Asteroid from 'graphics/asteroid';
 
 function Graphics(game){
-  this.stage = new Stage({width: 400, height: 300, container: 'game'});
+  this.stage   = new Stage({width: 400, height: 300, container: 'game'});
+  this.game    = game;
+  this.gameEnd = this.game.flatMap('.start');
 
-  game.ship.onValue(this.drawShip.bind(this));
-  game.lasers.onValue(this.drawLaser.bind(this));
-  game.asteroids.onValue(this.drawAsteroid.bind(this));
+  this.game.flatMap('.ship').onValue(this.drawShip.bind(this));
+  this.game.flatMap('.lasers').onValue(this.drawLaser.bind(this));
+  this.game.flatMap('.asteroids').onValue(this.drawAsteroid.bind(this));
 }
 Graphics.prototype.drawShip = function(ship){
-  var sprite = new Ship();
-
-  this.stage.add(sprite);
-  ship.status.map('.position').onValue(sprite.moveTo.bind(sprite));
-  ship.status.map('.rotation').onValue(sprite.rotateTo.bind(sprite));
-  ship.status.onEnd(sprite.destroy.bind(sprite));
+  this.drawSprite(ship, new Ship());
 };
 Graphics.prototype.drawLaser = function(laser){
-  var sprite = new Laser();
-
-  this.stage.add(sprite);
-  laser.status.map('.position').onValue(sprite.moveTo.bind(sprite));
-  laser.status.map('.rotation').onValue(sprite.rotateTo.bind(sprite));
-  laser.status.onEnd(sprite.destroy.bind(sprite));
+  this.drawSprite(laser, new Laser());
 };
 Graphics.prototype.drawAsteroid = function(asteroid){
-  var sprite = new Asteroid(asteroid.size);
-
-  this.stage.add(sprite);
-  asteroid.status.map('.position').onValue(sprite.moveTo.bind(sprite));
-  asteroid.status.map('.rotation').onValue(sprite.rotateTo.bind(sprite));
-  asteroid.status.onEnd(sprite.destroy.bind(sprite));
+  this.drawSprite(asteroid, new Asteroid(asteroid.size));
 };
+Graphics.prototype.drawSprite = function(gameObject, sprite){
+  this.stage.add(sprite);
+  var status = gameObject.status.takeUntil(this.gameEnd);
+
+  status
+    .map('.position')
+    .onValue(sprite.moveTo.bind(sprite));
+  status
+    .map('.rotation')
+    .onValue(sprite.rotateTo.bind(sprite));
+  status
+    .onEnd(sprite.destroy.bind(sprite));
+};
+
 
 export default Graphics;

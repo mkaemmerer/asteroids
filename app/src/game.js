@@ -10,6 +10,8 @@ import Asteroid          from 'game/asteroid';
 
 
 function Game(){
+  var game = this;
+
   this.collisions = new Collisions({
     'ship':       ['asteroids'],
     'lasers':     ['asteroids'],
@@ -18,12 +20,15 @@ function Game(){
 
   this.start     = Bacon.once();
 
-  this.waves     = Bacon.once(new Wave())
+  this.waves     = Bacon.once()
     .delay(0)
+    .map(game.startWave)
     .waterfall(function(w){
-      return w.end.map(function(){ return new Wave(); });
+      return w.end
+        .delay(2000) //Start a new wave 2 seconds after the previous one ends
+        .map(game.startWave);
     });
-  this.ship      = this.start
+  this.ship      = Bacon.once()
     .toProperty()
     .flatMap(this.spawnShip)
     .doAction(this.registerCollisions.bind(this), 'ship')
@@ -55,6 +60,9 @@ Game.prototype.spawnShip = function(){
   var ship       = new Ship(P2(w/2,h/2), controls);
 
   return Bacon.once(ship);
+};
+Game.prototype.startWave = function(){
+  return new Wave();
 };
 
 
