@@ -10,6 +10,7 @@ var livereload          = require('gulp-livereload');
 var bower               = require('gulp-bower-src');
 
 
+//Build tasks
 gulp.task('js', function() {
   return gulp.src('app/src/**/*.js')
     .pipe(sourcemaps.init())
@@ -29,13 +30,15 @@ gulp.task('html', function() {
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('build', ['js', 'jsDeps', 'html']);
+
 gulp.task('clean', function(){
   return gulp.src(['dist'], {read: false})
     .pipe(clean());
 });
 
 
-
+//Development tasks
 gulp.task('watch', function(){
   var server = livereload();
 
@@ -54,5 +57,6 @@ gulp.task('connect', ['js', 'jsDeps', 'html'], function(){
     livereload: false
   });
 });
+
 
 gulp.task('default', ['watch', 'connect']);
