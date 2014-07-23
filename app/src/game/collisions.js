@@ -1,7 +1,7 @@
 'use strict';
 
-import Bacon                            from 'Bacon';
-import {Position2 as P2, Vector2 as V2} from 'core/vector';
+import Bacon           from 'Bacon';
+import {Vector2 as V2} from 'core/vector';
 
 function Collisions(layer_info){
   this.layers = {};
@@ -25,7 +25,7 @@ function Collisions(layer_info){
   }
 }
 Collisions.prototype.register   = function(object, layer_name){
-  this.layers[layer_name].register(object);
+  return this.layers[layer_name].register(object);
 };
 Collisions.prototype.unregister = function(object, layer_name){
   this.layers[layer_name].unregister(object);
@@ -33,39 +33,45 @@ Collisions.prototype.unregister = function(object, layer_name){
 
 
 function CollisionLayer(){
-  this.objects       = [];
   this.collides_with = [];
+
+  this.adds    = new Bacon.Bus();
+  this.removes = new Bacon.Bus();
+  this.objects = Bacon.update([],
+      this.adds,    function(arr, x){ return arr.concat(x); },
+      this.removes, function(arr, x){ return arr.filter(function(y){ return y !== x; }); }
+    );
 }
 CollisionLayer.prototype.collideWith = function(layer){
-  var contains = this.collides_with.reduce(function(memo, x){
-    return memo || x === layer;
-  }, false);
+  function flatten(arrays){
+    return [].concat.apply([], arrays);
+  }
 
-  if(!contains){
+  if(this.collides_with.indexOf(layer) === -1){
     this.collides_with.push(layer);
+    this.other_objects = Bacon.combineAsArray(this.collides_with
+      .map(function(layer){ return layer.objects; })
+    ).map(flatten);
   }
 };
 CollisionLayer.prototype.register     = function(object){
-  var other_objects = this.collides_with.reduce(function(memo, layer){
-    return memo.concat(layer.objects);
-  }, []);
-
-  other_objects.forEach(function(other){
-    var hits = collisions(object, other);
-
-    var unsub_object = object.collisions.plug(hits[0]);
-    other.status.onEnd(unsub_object);
-
-    var unsub_other  = other.collisions.plug(hits[1]);
-    object.status.onEnd(unsub_other);
-  });
-
-  this.objects.push(object);
+  var hits = this.getCollisions(object);
+  this.adds.push(object);
+  return hits;
 };
 CollisionLayer.prototype.unregister   = function(object){
-  this.objects = this.objects.filter(function(x){
-    return x !== object;
-  });
+  this.removes.push(object);
+};
+CollisionLayer.prototype.getCollisions = function(object){
+  var removed = this.removes.filter(function(x){ return x === object; });
+  var hits    = this.other_objects.flatMapLatest(function(others){
+      return Bacon.mergeAll(others
+        .map(function(other){ return collisions(object, other); })
+      );
+    })
+    .takeUntil(removed);
+
+  return hits;
 };
 
 
@@ -74,20 +80,16 @@ function collisions(object1, object2){
   var position2 = object2.status.map('.position');
 
   var distance = (object1.radius + object2.radius)/2;
+  var hits     = Bacon.combineWith(checkCollision(distance), position1, position2)
+    .filter(function(isHit){ return isHit; });
 
-  var hits = Bacon.combineAsArray(position1, position2)
-    .filter(function(ps){
-      return checkCollision(distance, ps[0], ps[1]);
-    });
-
-  var hits1 = hits.map(object2);
-  var hits2 = hits.map(object1);
-
-  return [hits1, hits2];
+  return hits.map(object2);
 }
-function checkCollision(distance, p1, p2){
-  var between = V2.fromTo(p1,p2);
-  return between.magnitude() < distance;
+function checkCollision(distance){
+  return function(p1, p2){
+    var between = V2.fromTo(p1,p2);
+    return between.magnitude() < distance;
+  };
 }
 
 

@@ -48,7 +48,8 @@ function Game(){
 }
 Game.prototype.registerCollisions = function(layer, object){
   var collisions = this.collisions;
-  collisions.register(object, layer);
+  var messages   = collisions.register(object, layer);
+  object.collisions.plug(messages);
   object.status.onEnd(function(){
     collisions.unregister(object, layer);
   });
