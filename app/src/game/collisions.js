@@ -41,6 +41,9 @@ function CollisionLayer(){
       this.adds,    function(arr, x){ return arr.concat(x); },
       this.removes, function(arr, x){ return arr.filter(function(y){ return y !== x; }); }
     );
+
+  //Make sure the objects in this layer stay up-to-date even when there is no one listening
+  this.objects.onValue(function(){});
 }
 CollisionLayer.prototype.collideWith = function(layer){
   function flatten(arrays){
