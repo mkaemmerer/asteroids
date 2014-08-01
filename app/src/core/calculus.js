@@ -13,15 +13,16 @@ function property(value){
   return Bacon.constant(value);
 }
 
-Bacon.Property.prototype.integrate = function(start){
-  return this.sample(dt)
+Bacon.Observable.prototype.integrate = function(start){
+  return this.toProperty()
+    .sample(dt)
     .map(scale, dt/1000)
     .scan(start, add);
 };
-Bacon.Property.prototype.times = function(factor){
+Bacon.Observable.prototype.times = function(factor){
   return this.combine(property(factor), scale);
 };
-Bacon.Property.prototype.plus  = function(amount){
+Bacon.Observable.prototype.plus  = function(amount){
   return this.combine(property(amount), add);
 };
 

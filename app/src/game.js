@@ -21,8 +21,8 @@ function Game(){
   this.start     = Bacon.once();
 
   this.waves     = Bacon.once()
-    .delay(0)
     .map(game.startWave)
+    .delay(0)
     .waterfall(function(w){
       return w.end
         .delay(2000) //Start a new wave 2 seconds after the previous one ends
