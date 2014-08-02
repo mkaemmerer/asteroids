@@ -25,12 +25,17 @@ gulp.task('jsDeps', function() {
     .pipe(gulp.dest('dist/lib'));
 });
 
+gulp.task('css', function() {
+  return gulp.src('app/styles/*.css')
+    .pipe(gulp.dest('dist/styles'));
+});
+
 gulp.task('html', function() {
   return gulp.src('app/*.html')
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['js', 'jsDeps', 'html']);
+gulp.task('build', ['js', 'jsDeps', 'css', 'html']);
 
 gulp.task('clean', function(){
   return gulp.src(['dist'], {read: false})
@@ -42,15 +47,16 @@ gulp.task('clean', function(){
 gulp.task('watch', function(){
   var server = livereload();
 
-  gulp.watch('app/src/**/*.js', ['js']);
-  gulp.watch('app/*.html',      ['html']);
+  gulp.watch('app/src/**/*.js',  ['js']);
+  gulp.watch('app/styles/*.css', ['css']);
+  gulp.watch('app/*.html',       ['html']);
 
   gulp.watch(['dist/**']).on('change', function(file) {
     server.changed(file.path);
   });
 });
 
-gulp.task('connect', ['js', 'jsDeps', 'html'], function(){
+gulp.task('connect', ['js', 'jsDeps', 'css', 'html'], function(){
   connect.server({
     root: 'dist',
     port: 8000,

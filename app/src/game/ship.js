@@ -1,10 +1,10 @@
 'use strict';
 
-import __nothing__                      from 'core/calculus';
-import Bacon                            from 'Bacon';
-import {Position2 as P2, Vector2 as V2} from 'core/vector';
-import {toWorldCoordinates}             from 'game/world';
-import Laser                            from 'game/laser';
+import __nothing__           from 'core/calculus';
+import Bacon                 from 'Bacon';
+import {Vector2 as V2}       from 'core/vector';
+import {toWorldCoordinates}  from 'game/world';
+import Laser                 from 'game/laser';
 
 function Ship(pos, controls){
   this.collisions = new Bacon.Bus();
@@ -16,18 +16,18 @@ function Ship(pos, controls){
   this._controls  = controls;
   this._start_pos = pos;
 
-  var hit  = this.collisions.take(1);
-  var knot = Bacon.tie({
+  var physics = Bacon.tie({
     acceleration: this.acceleration.bind(this),
     velocity:     this.velocity.bind(this),
     position:     this.position.bind(this),
     heading:      this.heading.bind(this),
     rotation:     this.rotation.bind(this)
   });
+  var hit     = this.collisions.take(1);
 
   this.status  = Bacon.combineTemplate({
-      position: knot.position,
-      rotation: knot.rotation
+      position: physics.position,
+      rotation: physics.rotation
     })
     .takeUntil(hit);
   this.fire    = controls.action
@@ -37,31 +37,31 @@ function Ship(pos, controls){
     .map(this.shoot.bind(this));
 }
 
-Ship.prototype.acceleration = function(knot){
+Ship.prototype.acceleration = function(physics){
   var thrust = this._controls.direction
     .map('.dy')
     .map(function(y){ return Math.max(y, 0); })
     .times(this.move_speed)
-    .times(knot.heading);
-  var drag   = knot.velocity
+    .times(physics.heading);
+  var drag   = physics.velocity
     .times(-this.drag);
 
   return Bacon.Math.sum([thrust, drag], V2.zero);
 };
-Ship.prototype.velocity     = function(knot){
-  return knot.acceleration
+Ship.prototype.velocity     = function(physics){
+  return physics.acceleration
     .integrate(V2.zero);
 };
-Ship.prototype.position     = function(knot){
-  return knot.velocity
+Ship.prototype.position     = function(physics){
+  return physics.velocity
     .integrate(this._start_pos)
     .map(toWorldCoordinates);
 };
-Ship.prototype.heading      = function(knot){
-  return knot.rotation
+Ship.prototype.heading      = function(physics){
+  return physics.rotation
     .map(V2.fromRotation);
 };
-Ship.prototype.rotation     = function(knot){
+Ship.prototype.rotation     = function(physics){
   return this._controls.direction
     .map('.dx')
     .times(this.turn_speed)

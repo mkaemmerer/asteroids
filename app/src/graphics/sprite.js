@@ -19,24 +19,24 @@ Sprite.prototype.init = function(){
     fill: 'black',
     drawFunc: function(context){ self.draw(this, context); }
   });
-  this.layer = new Kinetic.Layer();
-  this.layer.add(this.shape);
 };
 Sprite.prototype.draw = function(){
   throw new Error('abstract method');
 };
 Sprite.prototype.moveTo = function(p){
   this.shape.position(p);
-  this.layer.draw();
+  this.shape.parent.draw();
 };
 Sprite.prototype.rotateTo = function(radians){
   var degrees = 360*radians/(2*Math.PI);
 
   this.shape.rotation(degrees);
-  this.layer.draw();
+  this.shape.parent.draw();
 };
 Sprite.prototype.destroy = function(){
-  this.layer.destroy();
+  var parent = this.shape.parent;
+  this.shape.destroy();
+  parent.draw();
 };
 
 export default Sprite;
