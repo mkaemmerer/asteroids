@@ -15,7 +15,7 @@ var game     = Bacon.once(runGame())
   .delay(0)
   .waterfall(function(game){
     return game.end
-      .delay(4000) //Start a new game 4 seconds after the last one ends
+      .delay(5000) //Start a new game 5 seconds after the last one ends
       .map(runGame);
   });
 var hud      = game.map(function(g){ return new HUD(g) });

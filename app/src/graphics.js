@@ -10,7 +10,7 @@ function Graphics(stage, game){
   this.game    = game;
   this.gameEnd = this.game.flatMap('.start'); //The game is over when a new game begins
 
-  this.game.flatMap('.ship').onValue(this.drawShip.bind(this));
+  this.game.flatMap('.ships').onValue(this.drawShip.bind(this));
   this.game.flatMap('.lasers').onValue(this.drawLaser.bind(this));
   this.game.flatMap('.asteroids').onValue(this.drawAsteroid.bind(this));
 }

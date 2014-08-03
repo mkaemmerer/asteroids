@@ -10,7 +10,7 @@ Bacon.Observable.prototype.waterfall = function(f){
 };
 Bacon.Observable.prototype.end = function(){
   var END = {};
-  return this.mapEnd(END).filter(function(x){ return x === END; });
+  return this.mapEnd(END).toEventStream().filter(function(x){ return x === END; });
 };
 
 Bacon.tie = function(strands){

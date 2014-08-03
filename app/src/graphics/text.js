@@ -20,8 +20,6 @@ Text.prototype.init = function(){
   });
 };
 Text.prototype.setText = function(text){
-  console.log(this.shape);
-
   this.shape.setText(text);
   this.shape.parent.draw();
 };
