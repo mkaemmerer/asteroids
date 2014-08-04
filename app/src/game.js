@@ -42,7 +42,8 @@ function Game(){
     ships:       this._ships.bind(this),
     extra_lives: this._extraLives.bind(this)
   });
-  this.extra_lives = ship_info.extra_lives;
+  this.extra_lives = ship_info.extra_lives
+    .toProperty();
   this.ships       = ship_info.ships
     .doAction(this.registerCollisions.bind(this), 'ship')
     .toProperty();

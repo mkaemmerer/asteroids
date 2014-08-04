@@ -19,7 +19,8 @@ function HUD(game){
     });
   this.messages = Bacon.mergeAll(wave_end, game_end);
 
-  this.score   = Bacon.once(new Score(game.score));
+  this.score    = Bacon.once(new Score(game.score));
+  this.lives    = Bacon.once(new Lives(game.extra_lives));
 }
 
 function Message(message, duration){
@@ -43,6 +44,15 @@ function Score(score){
     position: P2(0, 10),
     rotation: 0,
     text:     score.map(function(pts){ return 'SCORE: ' + pts; })
+  });
+}
+function Lives(lives){
+  this.start = Bacon.once();
+
+   this.status = Bacon.combineTemplate({
+    position: P2(250, 10),
+    rotation: 0,
+    text:     lives.map(function(count){ return 'LIVES: ' + Math.max(count,0); })
   });
 }
 
