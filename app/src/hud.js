@@ -15,7 +15,7 @@ function HUD(game){
   var game_end  = game.end
     .delay(1000)
     .map(function(){
-      return new Message('GAME OVER', 2000);
+      return new Message('GAME OVER', 4000);
     });
   this.messages = Bacon.mergeAll(wave_end, game_end);
 

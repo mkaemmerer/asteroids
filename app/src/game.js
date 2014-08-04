@@ -95,7 +95,10 @@ Game.prototype._ships      = function(info){
 Game.prototype._extraLives = function(info){
   var ship_destroyed = info.ships
     .flatMap('.status.end');
-  var bonus          = Bacon.never();
+  var bonus          = this.score
+    .map(function(x){ return Math.floor(x/10000); })
+    .skipDuplicates()
+    .changes();
 
   return Bacon.update(2,
     [ship_destroyed], function(x){ return x-1; },
