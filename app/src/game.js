@@ -26,26 +26,33 @@ function Game(){
         .delay(4000) //Start a new wave 4 seconds after the previous one ends
         .map(this.startWave);
     }.bind(this));
-
-  var shipInfo = Bacon.tie({
-    ships:      this._ships.bind(this),
-    extraLives: this._extraLives.bind(this)
-  });
-  this.extraLives = shipInfo.extraLives;
-  this.ships      = shipInfo.ships
-    .doAction(this.registerCollisions.bind(this), 'ship')
-    .toProperty();
-
   this.asteroids = this.waves
     .flatMap('.asteroids')
     .doAction(this.registerCollisions.bind(this), 'asteroids')
     .toProperty();
+
+  var asteroid_destroyed = this.asteroids.flatMap('.status.end');
+  var wave_complete      = this.waves.flatMap('.end').delay(1000);
+  this.score = Bacon.update(0,
+    [asteroid_destroyed], function(x){ return x+10;  },
+    [wave_complete],      function(x){ return x+100; });
+
+
+  var ship_info = Bacon.tie({
+    ships:       this._ships.bind(this),
+    extra_lives: this._extraLives.bind(this)
+  });
+  this.extra_lives = ship_info.extra_lives;
+  this.ships       = ship_info.ships
+    .doAction(this.registerCollisions.bind(this), 'ship')
+    .toProperty();
+
   this.lasers    = this.ships
     .flatMap('.lasers')
     .doAction(this.registerCollisions.bind(this), 'lasers')
     .toProperty();
 
-  this.end = this.extraLives
+  this.end = this.extra_lives
     .where().lessThan(0)
     .take(1);
 }
@@ -69,8 +76,8 @@ Game.prototype.spawnShip = function(){
 
   return ship;
 };
-Game.prototype._ships       = function(info){
-  var hasExtraLives = info.extraLives
+Game.prototype._ships      = function(info){
+  var has_extra_lives = info.extra_lives
     .toProperty()
     .is().greaterThanOrEqualTo(0);
 
@@ -82,14 +89,16 @@ Game.prototype._ships       = function(info){
         .delay(2000)
         .map(this.spawnShip);
     }.bind(this))
-    .takeWhile(hasExtraLives);
+    .takeWhile(has_extra_lives);
 };
 Game.prototype._extraLives = function(info){
-  var shipDestroyed = info.ships
+  var ship_destroyed = info.ships
     .flatMap('.status.end');
+  var bonus          = Bacon.never();
 
   return Bacon.update(2,
-    [shipDestroyed], function(x){ return x-1; });
+    [ship_destroyed], function(x){ return x-1; },
+    [bonus],          function(x){ return x+1; });
 };
 
 

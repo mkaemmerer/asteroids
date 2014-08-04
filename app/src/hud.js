@@ -4,20 +4,22 @@ import Bacon from 'Bacon';
 import {Position2 as P2} from 'core/vector';
 
 function HUD(game){
-  this.start   = Bacon.once();
+  this.start    = Bacon.once();
 
-  this.waveEnd = game.waves
+  var wave_end  = game.waves
     .flatMap('.end')
     .delay(1000)
     .map(function(){
       return new Message('WAVE COMPLETE', 2000);
     });
-
-  this.gameEnd = game.end
+  var game_end  = game.end
     .delay(1000)
     .map(function(){
       return new Message('GAME OVER', 2000);
     });
+  this.messages = Bacon.mergeAll(wave_end, game_end);
+
+  this.score   = Bacon.once(new Score(game.score));
 }
 
 function Message(message, duration){
@@ -33,6 +35,15 @@ function Message(message, duration){
   })
   .sampledBy(Bacon.once().concat(Bacon.later(duration)))
   .toProperty();
+}
+function Score(score){
+  this.start = Bacon.once();
+
+   this.status = Bacon.combineTemplate({
+    position: P2(0, 10),
+    rotation: 0,
+    text:     score.map(function(pts){ return 'SCORE: ' + pts; })
+  });
 }
 
 export default HUD;
