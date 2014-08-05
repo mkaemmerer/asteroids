@@ -43,12 +43,17 @@ function HUDGraphics(stage, hud){
   this.hud     = hud;
   this.gameEnd = this.hud.flatMap('.start'); //The game is over when a new game begins
 
-  this.hud.flatMap('.messages').onValue(this.drawText.bind(this));
-  this.hud.flatMap('.score').onValue(this.drawText.bind(this));
-  this.hud.flatMap('.lives').onValue(this.drawText.bind(this));
+  this.hud.flatMap('.messages').onValue(this.drawMessage.bind(this));
+  this.hud.flatMap('.score').onValue(this.drawStatus.bind(this));
+  this.hud.flatMap('.lives').onValue(this.drawStatus.bind(this));
 }
-HUDGraphics.prototype.drawText    = function(hudObject){
-  var textObject = new Text();
+HUDGraphics.prototype.drawMessage = function(message){
+  this.drawText(message, new Text({ align: 'center', fontSize: 40 }));
+};
+HUDGraphics.prototype.drawStatus  = function(status){
+  this.drawText(status, new Text({ align: 'left', fontSize: 20 }));
+};
+HUDGraphics.prototype.drawText    = function(hudObject, textObject){
   this.layer.add(textObject);
   var status = hudObject.status.takeUntil(this.gameEnd);
 

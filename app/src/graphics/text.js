@@ -2,7 +2,8 @@
 
 import Sprite from 'graphics/sprite';
 
-function Text(){
+function Text(options){
+  this.options = options || {};
   this.init();
 }
 Text.prototype = Object.create(Sprite.prototype);
@@ -12,16 +13,25 @@ Text.prototype.init = function(){
   this.shape = new Kinetic.Text({
     x: 0,
     y: 0,
-    align:      this.align || 'center',
     fill:       'black',
     text:       '',
-    fontSize:   30,
+    fontSize:   this.options.fontSize || 12,
     fontFamily: 'Share Tech Mono',
   });
+
 };
 Text.prototype.setText = function(text){
   this.shape.setText(text);
+  this.alignText();
   this.shape.parent.draw();
 };
+Text.prototype.alignText = function(){
+  switch(this.options.align){
+    case 'center': this.shape.offsetX(this.shape.width()/2); break;
+    case 'right':  this.shape.offsetX(this.shape.width()); break;
+    case 'left':   this.shape.offsetX(0); break;
+    default:
+  }
+}
 
 export default Text;
