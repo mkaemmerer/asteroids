@@ -1,8 +1,8 @@
 'use strict';
 
-import __nothing__                      from 'core/calculus';
 import Bacon                            from 'Bacon';
-import {Position2 as P2, Vector2 as V2} from 'core/vector';
+import __nothing__                      from 'engine/core/calculus';
+import {Position2 as P2, Vector2 as V2} from 'engine/core/vector';
 import {toWorldCoordinates}             from 'game/world';
 
 function Laser(pos, rot){

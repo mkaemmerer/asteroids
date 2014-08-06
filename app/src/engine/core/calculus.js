@@ -1,6 +1,6 @@
 'use strict';
 
-import {scale, add} from 'core/math';
+import {scale, add} from 'engine/core/math';
 import Bacon        from 'Bacon';
 
 

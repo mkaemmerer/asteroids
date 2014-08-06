@@ -1,6 +1,6 @@
 'use strict';
 
-import {Position2 as P2}  from 'core/vector';
+import {Position2 as P2}  from 'engine/core/vector';
 
 var width  = 400;
 var height = 300;

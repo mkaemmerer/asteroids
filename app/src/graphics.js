@@ -1,9 +1,9 @@
 'use strict';
 
+import Text     from 'engine/graphics/text';
 import Ship     from 'graphics/ship';
 import Laser    from 'graphics/laser';
 import Asteroid from 'graphics/asteroid';
-import Text     from 'graphics/text';
 
 function Graphics(stage, game){
   this.layer   = stage.addLayer();

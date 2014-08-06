@@ -1,10 +1,10 @@
 'use strict';
 
 import Bacon             from 'Bacon';
-import __nothing__       from 'core/util';
-import {Position2 as P2} from 'core/vector';
+import __nothing__       from 'engine/core/util';
+import {Position2 as P2} from 'engine/core/vector';
+import Collisions        from 'engine/collisions';
 import {Controls}        from 'game/controls';
-import Collisions        from 'game/collisions';
 import Ship              from 'game/ship';
 import Asteroid          from 'game/asteroid';
 

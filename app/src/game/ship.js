@@ -1,8 +1,8 @@
 'use strict';
 
-import __nothing__           from 'core/calculus';
 import Bacon                 from 'Bacon';
-import {Vector2 as V2}       from 'core/vector';
+import __nothing__           from 'engine/core/calculus';
+import {Vector2 as V2}       from 'engine/core/vector';
 import {toWorldCoordinates}  from 'game/world';
 import Laser                 from 'game/laser';
 
@@ -65,7 +65,7 @@ Ship.prototype.rotation     = function(physics){
   return this._controls.direction
     .map('.dx')
     .times(this.turn_speed)
-    .integrate(0)
+    .integrate(-2*Math.PI/4)
     .skipDuplicates();
 };
 

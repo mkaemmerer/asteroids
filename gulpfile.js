@@ -19,23 +19,24 @@ gulp.task('js', function() {
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist/src'));
 });
-
 gulp.task('jsDeps', function() {
   return bower()
     .pipe(gulp.dest('dist/lib'));
 });
-
 gulp.task('css', function() {
   return gulp.src('app/styles/*.css')
     .pipe(gulp.dest('dist/styles'));
 });
-
 gulp.task('html', function() {
   return gulp.src('app/*.html')
     .pipe(gulp.dest('dist'));
 });
+gulp.task('audio', function() {
+  return gulp.src('app/audio/*.mp3')
+    .pipe(gulp.dest('dist/audio'));
+});
 
-gulp.task('build', ['js', 'jsDeps', 'css', 'html']);
+gulp.task('build', ['js', 'jsDeps', 'css', 'html', 'audio']);
 
 gulp.task('clean', function(){
   return gulp.src(['dist'], {read: false})
@@ -56,7 +57,7 @@ gulp.task('watch', function(){
   });
 });
 
-gulp.task('connect', ['js', 'jsDeps', 'css', 'html'], function(){
+gulp.task('connect', ['build'], function(){
   connect.server({
     root: 'dist',
     port: 8000,

@@ -19,6 +19,7 @@
     "bacon": "~0.7.18",
     "bacon.matchers": "~0.3.0",
     "jquery": "~2.1.1",
-    "kineticjs": "~5.1.0"
+    "kineticjs": "~5.1.0",
+    "howler": "~1.1.25"
   }
 }

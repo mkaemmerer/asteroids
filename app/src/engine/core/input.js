@@ -1,8 +1,8 @@
 'use strict';
 
-import __nothing__ from 'core/calculus';
-import Bacon       from 'Bacon';
 import $           from 'jQuery';
+import Bacon       from 'Bacon';
+import __nothing__ from 'engine/core/calculus';
 
 /* jshint indent: false */
 var KEYS = {

@@ -1,6 +1,6 @@
 'use strict';
 
-import Sprite from 'graphics/sprite';
+import Sprite from 'engine/graphics/sprite';
 
 function Asteroid(size){
   this.width  = 10*size;

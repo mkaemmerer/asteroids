@@ -1,6 +1,6 @@
 'use strict';
 
-import {Scalar as S, Position2 as P2, Vector2 as V2} from 'core/vector';
+import {Scalar as S, Position2 as P2, Vector2 as V2} from 'engine/core/vector';
 
 function scale(x,y){
   if(x instanceof V2 && y instanceof S){

@@ -1,8 +1,8 @@
 'use strict';
 
 import Bacon           from 'Bacon';
-import {Input, KEYS}   from 'core/input';
-import {Vector2 as V2} from 'core/vector';
+import {Input, KEYS}   from 'engine/core/input';
+import {Vector2 as V2} from 'engine/core/vector';
 
 
 function directional_keys(up, down, left, right){

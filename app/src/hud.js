@@ -1,7 +1,7 @@
 'use strict';
 
 import Bacon from 'Bacon';
-import {Position2 as P2} from 'core/vector';
+import {Position2 as P2} from 'engine/core/vector';
 
 function HUD(game){
   this.start    = Bacon.once();

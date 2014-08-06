@@ -1,6 +1,6 @@
 'use strict';
 
-import Sprite from 'graphics/sprite';
+import Sprite from 'engine/graphics/sprite';
 
 function Text(options){
   this.options = options || {};

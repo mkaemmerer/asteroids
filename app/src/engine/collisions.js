@@ -1,7 +1,7 @@
 'use strict';
 
 import Bacon           from 'Bacon';
-import {Vector2 as V2} from 'core/vector';
+import {Vector2 as V2} from 'engine/core/vector';
 
 function Collisions(layer_info){
   this.layers = {};
