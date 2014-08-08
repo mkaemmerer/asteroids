@@ -1,14 +1,14 @@
 'use strict';
 
-import Bacon                    from 'Bacon';
-import __nothing__              from 'engine/core/util';
-import Game                     from 'game';
-import HUD                      from 'hud';
+import Bacon                             from 'Bacon';
+import __nothing__                       from 'engine/core/util';
+import Game                              from 'game';
+import HUD                               from 'hud';
 
-import Stage                    from 'engine/graphics/stage';
-import AudioPlayer              from 'engine/audio';
-import {Graphics, HUDGraphics}  from 'graphics';
-import Audio                    from 'audio';
+import Stage                             from 'engine/graphics/stage';
+import AudioPlayer                       from 'engine/audio';
+import {Graphics, HUDGraphics, Effects}  from 'graphics';
+import Audio                             from 'audio';
 
 function runGame(){
   return new Game();
@@ -25,6 +25,7 @@ var game     = Bacon.once(runGame())
 //Graphics
 var stage        = new Stage({width: 400, height: 300, container: 'game'});
 var graphics     = new Graphics(stage, game);
+var effects      = new Effects(stage, game);
 var hud_graphics = new HUDGraphics(stage, game.map(function(g){ return new HUD(g) }));
 
 //Audio

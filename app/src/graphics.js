@@ -1,14 +1,15 @@
 'use strict';
 
-import Text     from 'engine/graphics/text';
-import Ship     from 'graphics/ship';
-import Laser    from 'graphics/laser';
-import Asteroid from 'graphics/asteroid';
+import Text      from 'engine/graphics/text';
+import Ship      from 'graphics/ship';
+import Laser     from 'graphics/laser';
+import Asteroid  from 'graphics/asteroid';
+import Explosion from 'graphics/effects/explosion';
 
 function Graphics(stage, game){
   this.layer   = stage.addLayer();
   this.game    = game;
-  this.gameEnd = this.game.flatMap('.start'); //The game is over when a new game begins
+  this.newGame = this.game.flatMap('.start'); //The game is over when a new game begins
 
   this.game.flatMap('.ships').onValue(this.drawShip.bind(this));
   this.game.flatMap('.lasers').onValue(this.drawLaser.bind(this));
@@ -25,7 +26,7 @@ Graphics.prototype.drawAsteroid = function(asteroid){
 };
 Graphics.prototype.drawSprite = function(gameObject, sprite){
   this.layer.add(sprite);
-  var status = gameObject.status.takeUntil(this.gameEnd);
+  var status = gameObject.status.takeUntil(this.newGame);
 
   status
     .map('.position')
@@ -38,10 +39,34 @@ Graphics.prototype.drawSprite = function(gameObject, sprite){
 };
 
 
+function Effects(stage, game){
+  this.layer   = stage.addLayer();
+  this.game    = game;
+  this.newGame = this.game.flatMap('.start');
+
+  this.game.flatMap('.asteroids')
+    .flatMap('.status.end')
+    .onValue(this.drawExplosion.bind(this));
+  this.game.flatMap('.ships')
+    .flatMap('.status.end')
+    .onValue(this.drawExplosion.bind(this));
+}
+Effects.prototype.drawExplosion = function(exploded){
+  var explosion = new Explosion();
+  this.layer.add(explosion);
+  explosion.animate();
+
+  Bacon.once(exploded.position)
+    .onValue(explosion.moveTo.bind(explosion));
+  Bacon.later(750)
+    .onValue(explosion.destroy.bind(explosion));
+};
+
+
 function HUDGraphics(stage, hud){
   this.layer   = stage.addLayer();
   this.hud     = hud;
-  this.gameEnd = this.hud.flatMap('.start'); //The game is over when a new game begins
+  this.newGame = this.hud.flatMap('.start'); //The game is over when a new game begins
 
   this.hud.flatMap('.messages').onValue(this.drawMessage.bind(this));
   this.hud.flatMap('.score').onValue(this.drawStatus.bind(this));
@@ -55,7 +80,7 @@ HUDGraphics.prototype.drawStatus  = function(status){
 };
 HUDGraphics.prototype.drawText    = function(hudObject, textObject){
   this.layer.add(textObject);
-  var status = hudObject.status.takeUntil(this.gameEnd);
+  var status = hudObject.status.takeUntil(this.newGame);
 
   status
     .map('.position')
@@ -70,4 +95,4 @@ HUDGraphics.prototype.drawText    = function(hudObject, textObject){
     .onEnd(textObject.destroy.bind(textObject));
 };
 
-export { Graphics, HUDGraphics };
+export { Graphics, Effects, HUDGraphics };
