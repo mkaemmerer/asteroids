@@ -6,6 +6,7 @@ import Sprite  from 'engine/graphics/sprite';
 function Explosion(){
   this.shape = new Kinetic.Group();
 }
+Explosion.prototype      = Object.create(Sprite.prototype);
 Explosion.prototype.animate = function(){
   for(var i=0; i<8; i++){
     var particle = new ExplosionParticle();
@@ -22,15 +23,6 @@ Explosion.prototype.animate = function(){
     tween.onFinish = function(){ tween.destroy(); };
 
   }
-};
-Explosion.prototype.moveTo = function(p){
-  this.shape.position(p);
-  this.shape.parent.draw();
-}
-Explosion.prototype.destroy = function(){
-  var parent = this.shape.parent;
-  this.shape.destroy();
-  parent.draw();
 };
 
 

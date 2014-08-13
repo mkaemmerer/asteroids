@@ -75,12 +75,13 @@ Effects.prototype.drawThruster = function(ship){
   status
     .map('.rotation')
     .onValue(thruster.rotateTo.bind(thruster));
-  this.newGame
-    .onValue(thruster.destroy.bind(thruster));
   Bacon.interval(1000/10)
     .filter(ship.thrust)
-    .takeUntil(ship.status.end())
+    .takeUntil(status.end())
     .onValue(thruster.spawn.bind(thruster));
+  status
+    .delay(1000)
+    .onEnd(thruster.destroy.bind(thruster));
 };
 
 
