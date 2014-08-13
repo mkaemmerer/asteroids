@@ -30,10 +30,15 @@ function Ship(pos, controls){
       rotation: physics.rotation
     })
     .takeUntil(hit);
+  this.thrust  = controls.direction
+    .map('.dy')
+    .is().greaterThan(0)
+    .skipDuplicates()
+    .takeUntil(hit);
   this.fire    = controls.action
-    .map(this.status)
     .takeUntil(hit);
   this.lasers  = this.fire
+    .map(this.status)
     .map(this.shoot.bind(this));
 }
 

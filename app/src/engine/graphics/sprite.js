@@ -36,7 +36,7 @@ Sprite.prototype.rotateTo = function(radians){
 Sprite.prototype.destroy = function(){
   var parent = this.shape.parent;
   this.shape.destroy();
-  parent.draw();
+  if(parent){ parent.draw(); }
 };
 
 export default Sprite;

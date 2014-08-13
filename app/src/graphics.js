@@ -5,6 +5,7 @@ import Ship      from 'graphics/ship';
 import Laser     from 'graphics/laser';
 import Asteroid  from 'graphics/asteroid';
 import Explosion from 'graphics/effects/explosion';
+import Thruster  from 'graphics/effects/thruster';
 
 function Graphics(stage, game){
   this.layer   = stage.addLayer();
@@ -50,6 +51,8 @@ function Effects(stage, game){
   this.game.flatMap('.ships')
     .flatMap('.status.end')
     .onValue(this.drawExplosion.bind(this));
+  this.game.flatMap('.ships')
+    .onValue(this.drawThruster.bind(this));
 }
 Effects.prototype.drawExplosion = function(exploded){
   var explosion = new Explosion();
@@ -60,6 +63,24 @@ Effects.prototype.drawExplosion = function(exploded){
     .onValue(explosion.moveTo.bind(explosion));
   Bacon.later(750)
     .onValue(explosion.destroy.bind(explosion));
+};
+Effects.prototype.drawThruster = function(ship){
+  var thruster = new Thruster();
+  this.layer.add(thruster);
+  var status = ship.status.takeUntil(this.newGame);
+
+  status
+    .map('.position')
+    .onValue(thruster.moveTo.bind(thruster));
+  status
+    .map('.rotation')
+    .onValue(thruster.rotateTo.bind(thruster));
+  this.newGame
+    .onValue(thruster.destroy.bind(thruster));
+  Bacon.interval(1000/10)
+    .filter(ship.thrust)
+    .takeUntil(ship.status.end())
+    .onValue(thruster.spawn.bind(thruster));
 };
 
 
